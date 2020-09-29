@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import DayList from './DayList';
-import Appointment from './Appointment';
 import 'components/Application.scss';
 
 export default function Application(props) {
