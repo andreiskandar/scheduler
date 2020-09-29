@@ -5,4 +5,4 @@ import 'index.scss';
 
 import Application from 'components/Application';
 
-ReactDOM.render(<DayListItem />, document.getElementById('root'));
+ReactDOM.render(<Application />, document.getElementById('root'));
