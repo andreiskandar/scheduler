@@ -1,6 +1,14 @@
-const selectUserByName = (state, name) => {
-  const filteredNames = state.users.filter((user) => user.name === name);
-  return filteredNames;
+// const selectUserByName = (state, name) => {
+//   const filteredNames = state.users.filter((user) => user.name === name);
+//   return filteredNames;
+// };
+
+const getInterview = (state, interview) => {
+  if (!interview) return null;
+  else {
+    interview.interviewer = state.interviewers[interview.interviewer];
+    return interview;
+  }
 };
 
 const getAppointmentsForDay = (state, day) => {
@@ -14,4 +22,4 @@ const getAppointmentsForDay = (state, day) => {
   return result;
 };
 
-export { getAppointmentsForDay };
+export { getAppointmentsForDay, getInterview };
