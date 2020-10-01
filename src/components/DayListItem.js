@@ -3,7 +3,6 @@ import 'components/DayListItem.scss';
 import classNames from 'classnames';
 
 const DayListItem = (props) => {
-  const { name, spots, selected, setDay } = props;
   const formatSpots = props.spots === 0 ? 'no spots' : props.spots === 1 ? '1 spot' : `${props.spots} spots`;
 
   const dayClass = classNames({
