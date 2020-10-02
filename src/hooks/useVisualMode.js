@@ -3,18 +3,13 @@ import { useState } from 'react';
 const useVisualMode = (initial) => {
   const [mode, setMode] = useState(initial);
   const [history, setHistory] = useState([initial]);
-  console.log('history: ', history);
 
   const transition = (mode, replace = false) => {
-    // setHistory((prev) => [...prev, newMode : null]);
-    // setHistory((prev) => (replace ? [...prev.slice(0, prev.length - 1), mode] : [...prev, mode]));
-    setHistory((prev) => (replace ? [...prev, mode] : [...prev, mode]));
-
-    console.log('history: inside transition ', history);
-
+    setHistory((prev) => (replace ? [...prev.slice(0, prev.length - 1), mode] : [...prev, mode]));
     setMode(mode);
+    // setHistory((prev) => [...prev, newMode : null]);
   };
-  //['First', 'second', 'third']
+  // setHistory((prev) => (replace ? [...prev, mode] : [...prev, mode]));
   const back = () => {
     // setHistory((prev) => [...prev.splice(history.length - 1, 1)]);
     if (history.length < 2) return;
@@ -27,6 +22,3 @@ const useVisualMode = (initial) => {
 };
 
 export default useVisualMode;
-
-const arr = [1, 2, 3, 4];
-const newArr = [...arr];
