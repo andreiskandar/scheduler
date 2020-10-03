@@ -26,7 +26,7 @@ const Form = (props) => {
             type='text'
             placeholder='Enter Student Name'
             value={student}
-            onInput={(event) => setStudent(event.target.value)}
+            onChange={(event) => setStudent(event.target.value)}
             /*
             This must be a controlled component
             */

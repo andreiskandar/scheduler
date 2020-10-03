@@ -1,5 +1,4 @@
 import React from 'react';
-import useVisualMode from '../../hooks/useVisualMode';
 
 const Empty = (props) => {
   return (
