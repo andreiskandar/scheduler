@@ -6,9 +6,17 @@
 const getInterview = (state, interview) => {
   if (!interview) return null;
   else {
-    interview.interviewer = state.interviewers[interview.interviewer];
-    return interview;
+    return {
+      student: interview.student,
+      interviewer: state.interviewers[interview.interviewer],
+    };
   }
+
+  // if (!interview) return null;
+  // else {
+  //   interview.interviewer = state.interviewers[interview.interviewer];
+  //   return interview;
+  // }
 };
 
 const getInterviewersForDay = (state, day) => {
@@ -22,6 +30,8 @@ const getInterviewersForDay = (state, day) => {
 };
 
 const getAppointmentsForDay = (state, day) => {
+  console.log('day:', day);
+  console.log('state:', state);
   const result =
     state.days.length === 0
       ? []
@@ -29,6 +39,7 @@ const getAppointmentsForDay = (state, day) => {
       ? []
       : state.days.filter((entry) => entry.name === day)[0].appointments.map((apptNum) => state.appointments[apptNum]);
 
+  console.log('result:', result);
   return result;
 };
 

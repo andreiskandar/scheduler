@@ -4,19 +4,15 @@ const useVisualMode = (initial) => {
   const [mode, setMode] = useState(initial);
   const [history, setHistory] = useState([initial]);
 
-  const transition = (mode, replace = false) => {
-    setHistory((prev) => (replace ? [...prev.slice(0, prev.length - 1), mode] : [...prev, mode]));
-    setMode(mode);
-    // setHistory((prev) => [...prev, newMode : null]);
+  const transition = (newMode, replace = false) => {
+    setHistory((prev) => (replace ? [...prev.slice(0, prev.length - 2), newMode] : [...prev, newMode]));
+    setMode(newMode);
   };
-  // setHistory((prev) => (replace ? [...prev, mode] : [...prev, mode]));
-  const back = () => {
-    // setHistory((prev) => [...prev.splice(history.length - 1, 1)]);
-    if (history.length < 2) return;
 
+  const back = () => {
+    if (history.length < 2) return;
     setHistory((prev) => [...prev.slice(0, history.length - 1)]);
   };
-  // setMode(history[history.length - 1]);
 
   return { mode: history[history.length - 1], transition, back };
 };

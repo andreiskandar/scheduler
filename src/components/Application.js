@@ -11,14 +11,31 @@ export default function Application(props) {
     days: [],
     day: 'Monday',
     appointments: {},
+    interviewers: {},
   });
 
   const dailyAppointments = getAppointmentsForDay(state, state.day);
 
-  const bookInterview = (id, interview) => {
-    console.log('id:', id);
-    console.log('interview:', interview);
+  const cancelInterview = (id, interview) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview },
+    };
 
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    return axios.delete(`api/appointments/${id}`).then(() => {
+      setState({ ...state, appointments });
+      return true;
+    });
+    // get id from appointment slot id
+    // set interview to null (setState)
+    // delete axios request based on the id
+  };
+
+  const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview },
@@ -29,10 +46,22 @@ export default function Application(props) {
       [id]: appointment,
     };
 
-    setState({ ...state, appointments });
+    return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
+      setState((prev) => {
+        return { ...prev, appointments };
+      });
+      return true;
+    });
   };
 
   const setDay = (day) => setState({ ...state, day });
+
+  // function setDay(day) {
+  //   setState((prev) => {
+  //     console.log('prev:', prev);
+  //     return { ...prev, day };
+  //   });
+  // }
 
   useEffect(() => {
     const apiDays = axios.get('/api/days');
@@ -42,12 +71,19 @@ export default function Application(props) {
     Promise.all([apiDays, apiAppointments, apiInterviewers])
       .then((response) => {
         const [days, appointments, interviewers] = response;
+        console.log('interviewers.data:', interviewers.data);
+        console.log('appointments.data:', appointments.data);
+        console.log(' days.data:', days.data);
         setState((prev) => ({
           ...prev,
           days: days.data,
           appointments: appointments.data,
           interviewers: interviewers.data,
         }));
+        return true;
+      })
+      .then(() => {
+        console.log('after promise', state);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -64,6 +100,7 @@ export default function Application(props) {
         interview={interviewer}
         interviewers={interviewers}
         bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
       />
     );
   });

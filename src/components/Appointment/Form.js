@@ -16,12 +16,6 @@ const Form = (props) => {
     props.onCancel();
   };
 
-  const save = (name, interviewer) => {
-    const interview = {
-      student: name,
-      interviewer,
-    };
-  };
   return (
     <main className='appointment__card appointment__card--create'>
       <section className='appointment__card-left'>
