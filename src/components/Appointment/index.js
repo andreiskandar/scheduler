@@ -91,11 +91,6 @@ const Appointment = (props) => {
           onSave={save}
         />
       )}
-      {/* {props.interview ? (
-        <Show student={props.interview.student} interviewer={props.interview.interviewer} />
-      ) : (
-        <Empty />
-      )} */}
     </article>
   );
 };

@@ -9,8 +9,8 @@ import 'components/Application.scss';
 export default function Application(props) {
   const { state, setDay, bookInterview, cancelInterview } = useApplicationData();
 
+  // Helper functions called
   const interviewers = getInterviewersForDay(state, state.day);
-
   const appointments = getAppointmentsForDay(state, state.day).map((appointment) => {
     return (
       <Appointment
