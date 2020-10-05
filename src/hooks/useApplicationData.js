@@ -1,9 +1,11 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+import { getDayFromAppointmentId } from '../helpers/functions';
 import axios from 'axios';
 
 const SET_DAY = 'SET_DAY';
 const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 const SET_INTERVIEW = 'SET_INTERVIEW';
+const CANCEL_INTERVIEW = 'CANCEL_INTERVIEW';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -24,7 +26,7 @@ const reducer = (state, action) => {
     case SET_INTERVIEW: {
       const appointment = {
         ...state.appointments[action.id],
-        interview: action.interview === null ? null : { ...action.interview },
+        interview: action.interview,
       };
 
       const appointments = {
@@ -32,8 +34,31 @@ const reducer = (state, action) => {
         [action.id]: appointment,
       };
 
-      return { ...state, appointments };
+      let days = [...state.days];
+      const foundDay = getDayFromAppointmentId(state, action.id);
+      if (state.appointments[action.id].interview === null) {
+        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
+      }
+
+      return { ...state, appointments, days };
     }
+    case CANCEL_INTERVIEW: {
+      const appointment = {
+        ...state.appointments[action.id],
+        interview: null,
+      };
+
+      const appointments = {
+        ...state.appointments,
+        [action.id]: appointment,
+      };
+
+      const foundDay = getDayFromAppointmentId(state, action.id);
+      const days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
+
+      return { ...state, appointments, days };
+    }
+
     default:
       throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
   }
@@ -48,15 +73,6 @@ const initialState = {
 
 const useApplicationData = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
-  // const [state, setState] = useState({
-  //   days: [],
-  //   day: 'Monday',
-  //   appointments: {},
-  //   interviewers: {},
-  // });
-
-  // const setDay = (day) => setState({ ...state, day });
   const setDay = (day) => dispatch({ type: 'SET_DAY', day });
 
   useEffect(() => {
@@ -73,40 +89,12 @@ const useApplicationData = () => {
           appointments: appointments.data,
           interviewers: interviewers.data,
         });
-        // setState((prev) => ({
-        //   ...prev,
-        //   days: days.data,
-        //   appointments: appointments.data,
-        //   interviewers: interviewers.data,
-        // }));
         return true;
       })
       .catch((error) => console.error(error));
   }, []);
 
-  const getDay = (appt_id) => state.days.find(({ appointments }) => appointments.includes(appt_id));
-
   const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    if (state.appointments[id].interview === null) {
-      const foundDay = getDay(id);
-      const mutateDays = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
-      // const newState = {
-      //   ...state,
-      //   mutateDays,
-      // };
-      // setState(newState);
-    }
-
     return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
       dispatch({
         type: SET_INTERVIEW,
@@ -114,31 +102,13 @@ const useApplicationData = () => {
         interview,
       });
 
-      // setState((prev) => {
-      //   return { ...prev, appointments };
-      // });
-
       return true;
     });
   };
 
-  const cancelInterview = (id, interview) => {
-    const foundDay = getDay(id);
-    const mutateDays = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
-
-    const cancelAppointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-
-    const appointments = {
-      ...state.appointments,
-      [id]: cancelAppointment,
-    };
-
+  const cancelInterview = (id) => {
     return axios.delete(`api/appointments/${id}`).then(() => {
-      dispatch({ type: SET_INTERVIEW, id, interview: null });
-      // setState({ ...state, appointments, mutateDays });
+      dispatch({ type: CANCEL_INTERVIEW, id, interview: null });
       return true;
     });
   };

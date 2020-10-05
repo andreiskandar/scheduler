@@ -20,6 +20,7 @@ const getInterview = (state, interview) => {
 };
 
 const getInterviewersForDay = (state, day) => {
+  console.log('state.days:', state.days);
   const result =
     state.days.length === 0
       ? []

@@ -1,8 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import InterviewerListItem from 'components/InterviewerListItem';
 import 'components/InterviewerList.scss';
 
 const InterviewerList = (props) => {
+  // PropTypes.instanceOf(interviewerList);
   const { interviewers, setInterviewer } = props;
   const interviewerList = interviewers.map((interviewer) => {
     return (

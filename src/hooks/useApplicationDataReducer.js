@@ -1,4 +1,5 @@
-import { useState, useEffect, useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+import { getDayIdFromAppointmentId, getRemainingSpotsForDay } from '../helpers/functions';
 import axios from 'axios';
 
 const SET_DAY = 'SET_DAY';
@@ -32,7 +33,17 @@ const reducer = (state, action) => {
         [action.id]: appointment,
       };
 
-      return { ...state, appointments };
+      const getDay = (appt_id) => state.days.find(({ appointments }) => appointments.includes(appt_id));
+
+      let days;
+      if (state.appointments[action.id].interview === null) {
+        const foundDay = getDayIdFromAppointmentId(state, action.id);
+        const remainingSpots = getRemainingSpotsForDay(foundDay, state);
+        console.log('remainingSpots:', remainingSpots);
+        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
+      }
+
+      return { ...state, appointments, days };
     }
     default:
       throw new Error(`Tried to reduce with unsupported action type: ${action.type}`);
@@ -84,8 +95,6 @@ const useApplicationData = () => {
       .catch((error) => console.error(error));
   }, []);
 
-  const getDay = (appt_id) => state.days.find(({ appointments }) => appointments.includes(appt_id));
-
   const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
@@ -97,21 +106,22 @@ const useApplicationData = () => {
       [id]: appointment,
     };
 
-    if (state.appointments[id].interview === null) {
-      const foundDay = getDay(id);
-      const mutateDays = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
-      // const newState = {
-      //   ...state,
-      //   mutateDays,
-      // };
-      // setState(newState);
-    }
+    // if (state.appointments[id].interview === null) {
+    //   const foundDay = getDay(id);
+    //   const mutateDays = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
+    // const newState = {
+    //   ...state,
+    //   mutateDays,
+    // };
+    // setState(newState);
+    // }
 
     return axios.put(`/api/appointments/${id}`, { interview }).then(() => {
       dispatch({
         type: SET_INTERVIEW,
         id,
         interview,
+        //mutateDays
       });
 
       // setState((prev) => {
@@ -123,7 +133,7 @@ const useApplicationData = () => {
   };
 
   const cancelInterview = (id, interview) => {
-    const foundDay = getDay(id);
+    const foundDay = getDayIdFromAppointmentId(id);
     const mutateDays = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
 
     const cancelAppointment = {
