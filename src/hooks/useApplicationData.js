@@ -36,25 +36,11 @@ const reducer = (state, action) => {
 
       let days = [...state.days];
       const foundDay = getDayFromAppointmentId(state, action.id);
-      if (state.appointments[action.id].interview === null) {
+      if (state.appointments[action.id].interview === null && action.interview !== null) {
         days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
+      } else if (state.appointments[action.id].interview !== null && action.interview === null) {
+        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
       }
-
-      return { ...state, appointments, days };
-    }
-    case CANCEL_INTERVIEW: {
-      const appointment = {
-        ...state.appointments[action.id],
-        interview: null,
-      };
-
-      const appointments = {
-        ...state.appointments,
-        [action.id]: appointment,
-      };
-
-      const foundDay = getDayFromAppointmentId(state, action.id);
-      const days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
 
       return { ...state, appointments, days };
     }
@@ -80,6 +66,18 @@ const useApplicationData = () => {
     const apiAppointments = axios.get('api/appointments');
     const apiInterviewers = axios.get('api/interviewers');
 
+    const wsURL = 'ws://localhost:8001/';
+    //connection to websocket
+    const ws = new WebSocket(wsURL);
+
+    ws.onopen = (evt) => {
+      ws.onmessage = (evt) => {
+        const data = JSON.parse(evt.data);
+        dispatch(data);
+      };
+    };
+
+    // ajax
     Promise.all([apiDays, apiAppointments, apiInterviewers])
       .then((response) => {
         const [days, appointments, interviewers] = response;
@@ -108,7 +106,7 @@ const useApplicationData = () => {
 
   const cancelInterview = (id) => {
     return axios.delete(`api/appointments/${id}`).then(() => {
-      dispatch({ type: CANCEL_INTERVIEW, id, interview: null });
+      dispatch({ type: SET_INTERVIEW, id, interview: null });
       return true;
     });
   };

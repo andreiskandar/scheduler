@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from 'components/Appointment/Header';
 import Show from 'components/Appointment/Show';
 import Empty from 'components/Appointment/Empty';
@@ -21,6 +21,14 @@ const ERROR_DELETE = 'ERROR_DELETE';
 
 const Appointment = (props) => {
   const { mode, transition, back } = useVisualMode(props.interview ? SHOW : EMPTY);
+
+  useEffect(() => {
+    if (props.interview) {
+      transition(SHOW);
+    } else {
+      transition(EMPTY);
+    }
+  }, [props.interview]);
 
   const cancel = () => {
     transition(DELETE);
@@ -74,7 +82,7 @@ const Appointment = (props) => {
       {mode === CONFIRM && (
         <Confirm message={'Are you sure you would like to delete?'} onCancel={() => back()} onConfirm={cancel} />
       )}
-      {mode === SHOW && (
+      {mode === SHOW && props.interview && (
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}

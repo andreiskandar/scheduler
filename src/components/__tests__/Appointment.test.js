@@ -5,7 +5,7 @@ import { render, screen } from '@testing-library/react';
 import Appointment from '../Appointment/index';
 
 describe('Appointment', () => {
-  it('renders without crashing', () => {
+  it('renders without crashingw', () => {
     render(<Appointment />);
   });
 });
