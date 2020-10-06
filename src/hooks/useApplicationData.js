@@ -5,7 +5,6 @@ import axios from 'axios';
 const SET_DAY = 'SET_DAY';
 const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 const SET_INTERVIEW = 'SET_INTERVIEW';
-const CANCEL_INTERVIEW = 'CANCEL_INTERVIEW';
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -63,11 +62,11 @@ const useApplicationData = () => {
 
   useEffect(() => {
     const apiDays = axios.get('/api/days');
-    const apiAppointments = axios.get('api/appointments');
-    const apiInterviewers = axios.get('api/interviewers');
+    const apiAppointments = axios.get('/api/appointments');
+    const apiInterviewers = axios.get('/api/interviewers');
 
-    const wsURL = 'ws://localhost:8001/';
     //connection to websocket
+    const wsURL = 'ws://localhost:8001/';
     const ws = new WebSocket(wsURL);
 
     ws.onopen = (evt) => {
