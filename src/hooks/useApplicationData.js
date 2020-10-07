@@ -21,15 +21,6 @@ const useApplicationData = () => {
 
     //connection to websocket
     connectionToWebSocket(dispatch);
-    // const wsURL = 'ws://localhost:8001/';
-    // const ws = new WebSocket(wsURL);
-
-    // ws.onopen = (evt) => {
-    //   ws.onmessage = (evt) => {
-    //     const data = JSON.parse(evt.data);
-    //     dispatch(data);
-    //   };
-    // };
 
     // Ajax request
     Promise.all([apiDays, apiAppointments, apiInterviewers])
