@@ -36,9 +36,9 @@ const reducer = (state, action) => {
       let days = [...state.days];
       const foundDay = getDayFromAppointmentId(state, action.id);
       if (state.appointments[action.id].interview === null && action.interview !== null) {
-        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: --day.spots } : day));
+        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: day.spots - 1 } : day));
       } else if (state.appointments[action.id].interview !== null && action.interview === null) {
-        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: ++day.spots } : day));
+        days = state.days.map((day) => (day.id === foundDay.id ? { ...day, spots: day.spots + 1 } : day));
       }
 
       return { ...state, appointments, days };
@@ -65,16 +65,16 @@ const useApplicationData = () => {
     const apiAppointments = axios.get('/api/appointments');
     const apiInterviewers = axios.get('/api/interviewers');
 
-    //connection to websocket
-    const wsURL = 'ws://localhost:8001/';
-    const ws = new WebSocket(wsURL);
+    // //connection to websocket
+    // const wsURL = 'ws://localhost:8001/';
+    // const ws = new WebSocket(wsURL);
 
-    ws.onopen = (evt) => {
-      ws.onmessage = (evt) => {
-        const data = JSON.parse(evt.data);
-        dispatch(data);
-      };
-    };
+    // ws.onopen = (evt) => {
+    //   ws.onmessage = (evt) => {
+    //     const data = JSON.parse(evt.data);
+    //     dispatch(data);
+    //   };
+    // };
 
     // ajax
     Promise.all([apiDays, apiAppointments, apiInterviewers])
