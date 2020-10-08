@@ -3,7 +3,8 @@ const getDayFromAppointmentId = (state, appointment_id) =>
   state.days.find(({ appointments }) => appointments.includes(appointment_id));
 
 const connectionToWebSocket = (dispatch) => {
-  const wsURL = 'ws://localhost:8001/';
+  // const wsURL = 'ws://localhost:8001/';
+  const wsURL = 'wss://lhl-scheduler-2020.herokuapp.com/';
   const ws = new WebSocket(wsURL);
 
   ws.onopen = (evt) => {
