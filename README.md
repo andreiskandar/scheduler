@@ -1,4 +1,5 @@
 # Interview Scheduler
+Interview Scheduler is a single page full stack web application that uses Javascript, ReactJS, SCSS and an API that uses NodeJS with PostgreSQL. The application allows you to book interviews for students with interviewers for any weekday and you can also cancel and edit interviews.
 
 ## Setup
 
