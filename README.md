@@ -1,5 +1,6 @@
-# Interview Scheduler
+# [Interview Scheduler](http://adtime-scheduling.herokuapp.com/)
 Interview Scheduler is a single page full stack web application that uses Javascript, ReactJS, SCSS and an API that uses NodeJS with PostgreSQL. The application allows you to book interviews for students with interviewers for any weekday and you can also cancel and edit interviews.
+##### Click on the title of the app to see a live demo!
 
 ## Setup
 
